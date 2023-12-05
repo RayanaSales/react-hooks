@@ -102,12 +102,23 @@ function App() {
     setPokemonName('')
   }
 
+  /** 
+   * When the pokemon name changes, the error boundary will reset itself and re-render the children again.
+   * 
+   * the reset keys is there so when the errorboundary is on the error state, 
+   * it will reset itself if any of the values on the array resetKeys changes.
+   */
+
   return (
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary FallbackComponent={ErrorFallback} onReset={handleReset}>
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={handleReset}
+          resetKeys={[pokemonName]}
+        >
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>

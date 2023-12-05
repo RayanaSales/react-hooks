@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
 import {
   PokemonForm,
   PokemonInfoFallback,
@@ -19,24 +20,29 @@ import {
  *  in this example, the fallback component it's flexible.
  */
 
-class ErrorBoundary extends React.Component {
-  state = {error: null}
+/**
+ * YOU DONT NEED TO WRITE THE ERROR BOUNDARY - REACT HAD A LIB FOR THAT -> react-error-boundary
+ * BUT IF YOU NEED A CUSTOM ONE, THIS IS HOW YOU WOULD WRITE IT.
+ */
 
-  static getDerivedStateFromError(error) {
-    return {error}
-  }
+// class ErrorBoundary extends React.Component {
+//   state = {error: null}
 
-  /** anybody using this error boundary, has the flexibility to provide any Fallback component they want.
-   *  which makes this Error Boundary much more generically useful for us
-   */
-  render() {
-    const {error} = this.state
-    if (error) {
-      return <this.props.FallbackComponent error={error} />
-    }
-    return this.props.children
-  }
-}
+//   static getDerivedStateFromError(error) {
+//     return {error}
+//   }
+
+//   /** anybody using this error boundary, has the flexibility to provide any Fallback component they want.
+//    *  which makes this Error Boundary much more generically useful for us
+//    */
+//   render() {
+//     const {error} = this.state
+//     if (error) {
+//       return <this.props.FallbackComponent error={error} />
+//     }
+//     return this.props.children
+//   }
+// }
 
 function PokemonInfo({pokemonName}) {
   const [state, setState] = React.useState({
@@ -91,12 +97,17 @@ function App() {
     setPokemonName(newPokemonName)
   }
 
+  /**
+   * You NEED to add the key to the ErrorBoundary. If you dont do that, the state of the ErrorBoundary will never be updated.
+   * With the key, the ErrorBoundary gets reset every time the key changes,
+   */
+
   return (
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <ErrorBoundary key={pokemonName} FallbackComponent={ErrorFallback}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
